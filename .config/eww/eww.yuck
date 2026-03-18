@@ -1,0 +1,169 @@
+(defwidget bar []
+  (centerbox :orientation "h"
+    (workspaces)
+    (time)
+    (status_area)))
+
+(defwidget sidestuff []
+  (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+    (metric :label ""
+            :value volume
+            :onchange "amixer -D pulse sset Master {}%")
+    (metric :label ""
+            :value {EWW_RAM.used_mem_perc}
+            :onchange "")
+    (metric :label ""
+            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+            :onchange "")
+    time))
+
+
+
+
+
+
+(deflisten ws_states
+  :initial '["empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty"]'
+  `~/.config/eww/scripts/i3_ws.sh`)
+
+(defwidget workspace_button [state index]
+  (button 
+    :onclick "i3-msg workspace ${index + 1}"
+    :class "ws-btn ${state}"
+    "x"))
+
+(defwidget workspaces []
+  (box :class "workspaces" :spacing 20 :space-evenly true :halign "start"
+    (for i in "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
+      (button 
+        :onclick "i3-msg workspace ${i + 1}"
+        :class "ws-btn ${ws_states[i]}"
+        "•"))))
+
+
+
+
+
+;; --- WORKSPACES ---
+
+
+(defwidget time []
+  (box :class "status-bar-button"
+       :orientation "h"
+       :space-evenly true
+       :halign "center"
+    "x"))
+
+
+(defwidget metric [label value onchange]
+  (box :orientation "h"
+       :class "metric"
+       :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+           :max 101
+           :active {onchange != ""}
+           :value value
+           :onchange onchange)))
+
+
+(defvar quick_settings_reveal false)
+
+;; --- BAR WIDGET ---
+(defwidget status_area []
+  (eventbox :cursor "pointer"
+            :onclick "eww open --toggle quick_settings"
+            :class "status-bar-button"
+            :halign "end"
+    (box :class "status-bar-button" 
+         :spacing 8
+         :halign "end"
+         :space-evenly false
+         :orientation "h"
+      (label :class "icon" :text "󰕾") ;; Volume
+      (label :class "icon" :text "󰤨") ;; Network
+      (label :class "icon" :text "󰁹") ;; Battery
+    )
+  )
+)
+
+;; --- POPUP WIDGET ---
+(defwidget quick_settings_menu []
+  (box :class "quick-settings-box"
+       :orientation "vertical"
+    (label :text "Quick Settings Placeholder" :style "font-weight: bold;")
+    ;; You'll add sliders and buttons here later
+  )
+)
+
+;; --- WINDOW DEFINITIONS ---
+;; Your existing bar window would include (status_area) in its layout
+
+(defwindow quick_settings
+  :monitor 0
+  :geometry (geometry :x "-5px" 
+                      :y "45px" ;; Adjust based on your bar height
+                      :anchor "top right")
+  :stacking "fg"
+  (control_center)
+)
+
+(defwidget control_center []
+  (box :class "quick-settings-box" :orientation "v" :space-evenly false :spacing 15
+    
+    ;; 1. Top Row: Small Bubbles
+    (box :class "top-row" :orientation "h" :space-evenly false :spacing 10
+      (button :class "bubble-btn" :halign "start" :onclick "" "󰁹") ; Battery
+      (button :class "bubble-btn" :halign "end" :onclick "" "󰌾") ; Lock
+      (button :class "bubble-btn" :halign "end" :onclick "" "⏻") ; Power
+    )
+
+    ;; 2. Middle Section: Sliders
+    (box :class "sliders-box" :orientation "v" :space-evenly false :spacing 10
+      (box :orientation "h" :space-evenly false :spacing 10
+        (label :text "󰕾" :class "slider-icon")
+        (scale :class "vol-slider" 
+               :value 50 
+ :orientation "h" 
+               :flipped false 
+               :max 101 
+               :min 0)
+      )
+    )
+
+    ;; 3. Bottom Section: Large Settings Tabs
+    (box :class "settings-grid" :orientation "v" :space-evenly false :spacing 10
+      (box :orientation "h" :spacing 10 :space-evenly true
+        (button :class "grid-btn" "󰖩  Wi-Fi")
+        (button :class "grid-btn" "󰖂  Bluetooth")
+      )
+      (box :orientation "h" :spacing 10 :space-evenly true
+        (button :class "grid-btn" "󰖊  VPN")
+        (button :class "grid-btn" "󰄀  DND")
+      )
+    )
+  )
+)
+
+;; ------
+
+
+(deflisten music :initial ""
+  "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")
+
+(defpoll volume :interval "1s"
+  "scripts/getvol")
+
+(defpoll time :interval "10s"
+  "date '+%H:%M %b %d, %Y'")
+
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "100%"
+                      :height "10px"
+                      :anchor "top center")
+  :reserve (struts :side "top" :distance "4%")
+  (bar))
