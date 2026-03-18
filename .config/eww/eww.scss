@@ -1,0 +1,131 @@
+* {
+  all: unset; // Unsets everything so you can style everything from scratch
+}
+
+$background: #171717;
+$background2: #252525;
+$highlight: #414141;
+$foreground: #b0b4bc;
+$accent: #D35D6E;
+
+
+// Global Styles
+.bar {
+  background-color: #171717;
+  color: #b0b4bc;
+  padding: 10px;
+}
+
+// Styles on classes (see eww.yuck for more information)
+
+.sidestuff slider {
+  all: unset;
+  color: #ffd500;
+
+  &:hover {
+    color: #00ff33;
+  }
+}
+
+.metric scale trough highlight {
+  all: unset;
+  background-color: $accent;
+  color: #000000;
+  border-radius: 10px;
+}
+
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 3px;
+  min-width: 50px;
+  margin-left: 10px;
+  margin-right: 20px;
+}
+
+.label-ram {
+  font-size: large;
+}
+
+.workspaces button:hover {
+  color: $accent;
+}
+
+.workspaces button {
+  font-size: 15px;
+}
+
+
+.ws-btn {
+  color: #414141;
+  &.active { color: $accent; }
+  &.used   { color: #b0b4bc; }
+}
+
+.status-bar-button {
+  padding: 0 10px;
+  border-radius: 8px;
+
+  &:hover {
+    background: #414141;
+    
+  }
+}
+
+
+.quick-settings-box {
+  background-color: $background;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 300px;
+  min-height: 200px;
+}
+
+.icon {
+  font-size: 1.2rem;
+  margin: 0 4px
+
+}
+
+
+
+.cc-container {
+  background-color: #242424;
+  padding: 20px;
+  border-radius: 24px;
+  color: white;
+}
+
+/* Section 1: Bubbles */
+.bubble-btn {
+  background-color: $background2;
+  border-radius: 1%;
+  padding: 20px;
+  font-size: 1.2rem;
+  transition: 200ms;
+  &:hover { background-color: $highlight; }
+}
+
+/* Section 2: Sliders */
+.vol-slider trough {
+  background-color: $background2;
+  border-radius: 20px;
+  min-height: 5px;
+  min-width: 200px;
+}
+.vol-slider highlight {
+  background-color: $accent;
+  border-radius: 20px;
+}
+
+/* Section 3: Large Tabs */
+.grid-btn {
+  background-color: $background2;
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 1rem;
+  transition: 200ms;
+  &:hover { background-color: $highlight; }
+}
